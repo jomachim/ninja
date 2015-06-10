@@ -1,16 +1,20 @@
 /*
-
+NINJA.JS : 
+-socket.io
+-nodemon
+-github
 PLEASE ITERATE VERSION NUMBER BELOW
 
 */
-var version="0.2(beta)";
+var version="0.12(beta)";
 var vdate=new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 
 var io = require('socket.io').listen(8080, {
     log: true
 });
 
-console.log("PID :"+process.pid);console.log('STARTING APP.JS v.'+version+' @'+vdate);
+console.log("PID :"+process.pid);
+console.log('STARTING APP.JS v.'+version+' @'+vdate);
 var clients={};
 var pseudos=[];
 var doc="";
