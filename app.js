@@ -1,20 +1,11 @@
 /*
 
-PLEASE VERSION
-
-
+PLEASE ITERATE VERSION NUMBER BELOW
 
 */
-var version="0.1(beta)";
+var version="0.2(beta)";
 var vdate=new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 
-Object.size = function(obj) {
-    var size = 0, key;
-    for (key in obj) {
-        if (obj.hasOwnProperty(key)) size++;
-    }
-    return size;
-};
 var io = require('socket.io').listen(8080, {
     log: true
 });
@@ -91,3 +82,11 @@ socket.emit('version',version);console.log('emiting version number '+version);
 	
 });
 
+
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
