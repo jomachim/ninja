@@ -45,6 +45,7 @@ socket.emit('version',version);console.log('emiting version number '+version);
 	function send_users(){
 		for(pseudo in clients){
 			io.sockets.emit('add_user',clients[pseudo].pseudo);
+			save_to_file();
 		}
 	}
 	socket.on('login',function(pseudo){
@@ -85,8 +86,16 @@ socket.emit('version',version);console.log('emiting version number '+version);
 	
 	
 });
+var fs = require('fs');
+function save_to_file(){
+	
+	var wstream = fs.createWriteStream('sauvegarde.txt');
+	for(pseudo in clients){
+				wstream.write(pseudo+'@'+clients[pseudo].pseudo+'\n');
+			}
 
-
+	wstream.end(function () { console.log('liste des pseudo sauvée.'); });
+}
 Object.size = function(obj) {
     var size = 0, key;
     for (key in obj) {
