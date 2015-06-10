@@ -1,3 +1,12 @@
+/*
+
+PLEASE VERSION
+
+
+
+*/
+var version="0.1(beta)";
+var vdate=new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 
 Object.size = function(obj) {
     var size = 0, key;
@@ -10,7 +19,7 @@ var io = require('socket.io').listen(8080, {
     log: true
 });
 
-console.log("PID :"+process.pid);
+console.log("PID :"+process.pid);console.log('STARTING APP.JS v.'+version+' @'+vdate);
 var clients={};
 var pseudos=[];
 var doc="";
@@ -20,6 +29,10 @@ io.on('connection',function(socket){
 	// socket.id=socket.request.connection._peername.address;
 	// socket.id=socket.request.connection.remoteAddress;
 	// socket.id=socket.handshake.address;
+
+// versionning
+socket.emit('version',version);console.log('emiting version number '+version);
+
 	if(typeof clients[socket.id]=="undefined"){
 		console.log("creation nouveau client");
 		clients[socket.id]=socket;
