@@ -6,7 +6,8 @@ NINJA.JS :
 PLEASE ITERATE VERSION NUMBER BELOW
 
 */
-var version="0.13(beta)";
+
+var version="0.2(beta)";
 var vdate=new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 
 var io = require('socket.io').listen(8080, {
@@ -68,6 +69,7 @@ socket.emit('version',version);console.log('emiting version number '+version);
 	socket.on('reconnection',function(pseudo){
 		console.log(pseudo+" se reconnecte");
 		send_users();
+		socket.emit('update_doc',doc);
 
 	});
 	socket.on('deco',function(){
@@ -88,7 +90,7 @@ socket.emit('version',version);console.log('emiting version number '+version);
 
 	socket.on('change_doc',function(text){
 		doc=text;
-		update_doc(text);
+		update_doc('doc.txt',text);
 		socket.broadcast.emit('update_doc',doc);
 	});
 	
@@ -96,8 +98,8 @@ socket.emit('version',version);console.log('emiting version number '+version);
 	
 });
 
-var fs = require('fs');
-function load_doc(txt){
+
+function load_doc(txt){var fs = require('fs');
 	fs.readFile(txt, 'utf8', function(err, data) {
   		if (err) throw err;
   		console.log('Loaded OK: ' + txt);
@@ -105,14 +107,15 @@ function load_doc(txt){
   		
 	});
 }
-function update_doc(name,txt){
-	var wstream = fs.createWriteStream(name);
-	wstream.write(txt);
-	wstream.end(function () { console.log(name+' sauvée.'); });
+function update_doc(name,txt){var fs = require('fs');
+	var docstream = fs.createWriteStream(name);
+	docstream.write(txt);
+	docstream.end(function () { console.log(name+' sauvée.');
+		load_doc(name) });
 }
 
 function save_to_file(){
-	
+	var fs = require('fs');
 	var wstream = fs.createWriteStream('sauvegarde.txt');
 	for(pseudo in clients){
 				wstream.write(pseudo+'@'+clients[pseudo].pseudo+'\n');
@@ -127,3 +130,21 @@ Object.size = function(obj) {
     }
     return size;
 };
+
+
+process.stdin.resume();//so the program will not close instantly
+
+function exitHandler(options, err) {
+    if (options.cleanup) console.log('clean');
+    if (err) console.log(err.stack);
+    if (options.exit) console.log('App will now TERMINATE');save_to_file();update_doc('doc.txt',doc) ;process.exit();
+}
+
+//do something when app is closing
+process.on('exit', exitHandler.bind(null,{cleanup:true}));
+
+//catches ctrl+c event
+process.on('SIGINT', exitHandler.bind(null, {exit:true}));
+
+//catches uncaught exceptions
+process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
