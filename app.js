@@ -18,6 +18,12 @@ console.log('STARTING APP.JS v.'+version+' @'+vdate);
 var clients={};
 var pseudos=[];
 var doc="";
+var fs = require('fs');
+fs.watchFile("index.php",function (curr, prev) {
+  console.log('the current mtime is: ' + curr.mtime);
+  console.log('the previous mtime was: ' + prev.mtime);
+  if(curr.mtime!=prev.mtime){console.log('index.php changé');io.sockets.emit('new_html_version');}
+});
 io.on('connection',function(socket){
 	socket.id=socket.request.connection.remoteAddress;
 	console.log('connexion from ip :'+socket.request.connection._peername.address+' on port '+socket.request.connection._peername.port);
@@ -86,7 +92,11 @@ socket.emit('version',version);console.log('emiting version number '+version);
 	
 	
 });
-var fs = require('fs');
+
+	
+		
+
+
 function save_to_file(){
 	
 	var wstream = fs.createWriteStream('sauvegarde.txt');
