@@ -6,7 +6,7 @@ NINJA.JS :
 PLEASE ITERATE VERSION NUMBER BELOW
 
 */
-var version="0.12(beta)";
+var version="0.13(beta)";
 var vdate=new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 
 var io = require('socket.io').listen(8080, {
@@ -18,6 +18,7 @@ console.log('STARTING APP.JS v.'+version+' @'+vdate);
 var clients={};
 var pseudos=[];
 var doc="";
+load_doc('doc.txt');
 io.on('connection',function(socket){
 	socket.id=socket.request.connection.remoteAddress;
 	console.log('connexion from ip :'+socket.request.connection._peername.address+' on port '+socket.request.connection._peername.port);
@@ -63,7 +64,8 @@ socket.emit('version',version);console.log('emiting version number '+version);
 		send_users();
 
 	});
-	socket.on('deco',function(){io.sockets.emit('remove_user',clients[socket.id].pseudo);
+	socket.on('deco',function(){
+		io.sockets.emit('remove_user',clients[socket.id].pseudo);
 		console.log(clients[socket.id].pseudo+" se déconnecte.");
 		clients[socket.id]={};
 		//delete clients._[socket.id];
@@ -80,6 +82,7 @@ socket.emit('version',version);console.log('emiting version number '+version);
 
 	socket.on('change_doc',function(text){
 		doc=text;
+		update_doc(text);
 		socket.broadcast.emit('update_doc',doc);
 	});
 	
@@ -87,6 +90,19 @@ socket.emit('version',version);console.log('emiting version number '+version);
 	
 });
 var fs = require('fs');
+function load_doc(txt){
+	fs.readFile(txt, 'utf8', function(err, data) {
+  		if (err) throw err;
+  		console.log('Loaded OK: ' + txt);
+  		doc=data;
+  		
+	});
+}
+function update_doc(name,txt){
+	var wstream = fs.createWriteStream(name);
+	wstream.write(txt);
+	wstream.end(function () { console.log(name+' sauvée.'); });
+}
 function save_to_file(){
 	
 	var wstream = fs.createWriteStream('sauvegarde.txt');
