@@ -27,15 +27,16 @@ fs.watchFile("index.php",function (curr, prev) {
 });
 load_doc('doc.txt');
 io.on('connection',function(socket){
-	socket.id=socket.request.connection.remoteAddress;
+	socket.id=socket.request.connection._peername.address+":"+socket.request.connection._peername.port;
 	console.log('connexion from ip :'+socket.request.connection._peername.address+' on port '+socket.request.connection._peername.port);
 	// socket.id=socket.request.connection._peername.address;
-	// socket.id=socket.request.connection.remoteAddress;
+	// socket.id=socket.request.connection.remoteAddress;socket.request.connection.remoteAddress
 	// socket.id=socket.handshake.address;
 
 // versionning
-socket.emit('version',version);console.log('emiting version number '+version);
-
+socket.emit('version',version);
+console.log('emiting version number '+version);
+socket.emit('update_doc',doc);console.log('emiting doc '+version);
 	if(typeof clients[socket.id]=="undefined"){
 		console.log("creation nouveau client");
 		clients[socket.id]=socket;
