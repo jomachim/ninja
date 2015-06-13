@@ -27,7 +27,7 @@ fs.watchFile("index.php",function (curr, prev) {
 });
 load_doc('doc.txt');
 io.on('connection',function(socket){
-	socket.id=socket.request.connection._peername.address+":"+socket.request.connection._peername.port;
+	socket.id=socket.request.connection._peername.address;//+":"+socket.request.connection._peername.port;
 	console.log('connexion from ip :'+socket.request.connection._peername.address+' on port '+socket.request.connection._peername.port);
 	// socket.id=socket.request.connection._peername.address;
 	// socket.id=socket.request.connection.remoteAddress;socket.request.connection.remoteAddress
